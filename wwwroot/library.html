@@ -1,0 +1,998 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вавилонская библиотека — Архив</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --brass: #b89446;
+            --brass-light: #dcc07c;
+            --parchment-light: #efe3c8;
+            --parchment-dark: #d6c298;
+            --ink: #22170f;
+            --wood-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012 0.28' numOctaves='4' seed='9'/%3E%3CfeColorMatrix type='matrix' values='0.32 0 0 0 0.12  0 0.20 0 0 0.07  0 0 0.10 0 0.03  0 0 0 0.65 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3C/svg%3E");
+            --leather-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='l'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' seed='4'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23l)'/%3E%3C/svg%3E");
+        }
+
+        body {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            min-height: 100vh;
+            background-color: #070504;
+            color: #e8dcc6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ================= ВЕРХНЯЯ ПАНЕЛЬ ЗАЛА ================= */
+        .hall-header {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            background-color: #110b07;
+            background-image: linear-gradient(180deg, rgba(18, 12, 8, 0.97) 0%, rgba(11, 7, 5, 0.96) 100%), var(--wood-grain);
+            border-bottom: 1px solid rgba(184, 148, 70, 0.22);
+            padding: 11px 24px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.92);
+        }
+
+        .hall-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .back-link {
+            text-decoration: none;
+            padding: 6px 13px;
+            border-radius: 6px;
+            background: rgba(184, 148, 70, 0.1);
+            border: 1px solid rgba(184, 148, 70, 0.3);
+            color: var(--brass-light);
+            font-family: 'Cinzel', serif;
+            font-size: 12px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+            .back-link:hover {
+                background: rgba(184, 148, 70, 0.2);
+                border-color: var(--brass-light);
+            }
+
+        .hall-title {
+            font-family: 'Cinzel', serif;
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--brass-light);
+            letter-spacing: 0.8px;
+        }
+
+        .hall-subtitle {
+            font-size: 14px;
+            color: #968773;
+            font-style: italic;
+        }
+
+        .hall-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .hall-search {
+            padding: 6px 12px;
+            width: 220px;
+            border-radius: 6px;
+            background: #090604;
+            border: 1px solid rgba(184, 148, 70, 0.26);
+            color: #e8dcc6;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 15px;
+            outline: none;
+        }
+
+            .hall-search:focus {
+                border-color: var(--brass-light);
+            }
+
+        .filter-pill {
+            padding: 5px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(184, 148, 70, 0.18);
+            background: rgba(20, 13, 8, 0.85);
+            color: #b5a692;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+            .filter-pill.active,
+            .filter-pill:hover {
+                background: #291b10;
+                border-color: var(--brass);
+                color: var(--brass-light);
+            }
+
+        /* ================= СПЛОШНАЯ СТЕНА СТАРИННЫХ КНИЖНЫХ ПОЛОК ================= */
+        .library-wall {
+            max-width: 1180px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background-color: #080504;
+            border-left: 14px solid #160d07;
+            border-right: 14px solid #160d07;
+            box-shadow: 0 0 100px rgba(0, 0, 0, 1), inset 24px 0 38px rgba(0, 0, 0, 0.92), inset -24px 0 38px rgba(0, 0, 0, 0.92);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .shelf-tier {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .shelf-bay {
+            height: 204px;
+            padding: 20px 18px 0;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            gap: 2px;
+            position: relative;
+            background-color: #070504;
+            background-image: radial-gradient(ellipse at 50% 62%, rgba(44, 28, 17, 0.42) 0%, rgba(10, 6, 4, 0.96) 76%, #040302 100%), var(--wood-grain);
+            box-shadow: inset 0 34px 42px -4px rgba(0, 0, 0, 0.98), inset 26px 0 32px -8px rgba(0, 0, 0, 0.92), inset -26px 0 32px -8px rgba(0, 0, 0, 0.92);
+            overflow: visible;
+        }
+
+        .shelf-board {
+            height: 17px;
+            width: 100%;
+            background-color: #26160c;
+            background-image: var(--wood-grain), linear-gradient(180deg, #422918 0%, #331f12 24%, #21130a 72%, #0f0804 100% );
+            border-top: 1px solid rgba(255, 215, 165, 0.12);
+            border-bottom: 1px solid #040201;
+            box-shadow: 0 16px 24px rgba(0, 0, 0, 0.98), 0 4px 8px rgba(0, 0, 0, 0.9);
+            position: relative;
+            z-index: 4;
+        }
+
+        /* ================= СТАРИННЫЕ КОЖАНЫЕ КОРЕШКИ ================= */
+        .book-spine {
+            position: relative;
+            border-radius: 3px 3px 0 0;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 2px 8px;
+            user-select: none;
+            transform-origin: bottom center;
+            flex-shrink: 0;
+            transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s ease, filter 0.22s ease;
+            box-shadow: inset 3px 0 5px rgba(255, 232, 190, 0.18), inset -4px 0 7px rgba(0, 0, 0, 0.78), inset 0 3px 5px rgba(0, 0, 0, 0.55), 2px 0 5px rgba(0, 0, 0, 0.9);
+        }
+
+            .book-spine::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                border-radius: inherit;
+                background-image: var(--leather-grain), linear-gradient(90deg, rgba(0, 0, 0, 0.38) 0%, rgba(255, 230, 185, 0.15) 25%, rgba(255, 230, 185, 0.03) 52%, rgba(0, 0, 0, 0.45) 100% );
+                pointer-events: none;
+                z-index: 1;
+            }
+
+        .spine-ribs {
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: repeating-linear-gradient( 0deg, transparent 0px, transparent 24px, rgba(0, 0, 0, 0.65) 25px, rgba(224, 188, 114, 0.38) 26px, rgba(0, 0, 0, 0.55) 28px, transparent 29px );
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .ornament-diamonds {
+            position: absolute;
+            inset: 8px 0;
+            background-image: radial-gradient(circle, rgba(224, 188, 114, 0.6) 1.5px, transparent 2px);
+            background-size: 100% 28px;
+            background-position: center 12px;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .ornament-frame {
+            position: absolute;
+            inset: 7px 4px;
+            border: 1px solid rgba(224, 188, 114, 0.42);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .ornament-squares {
+            position: absolute;
+            inset: 10px 5px;
+            background: repeating-linear-gradient( 0deg, transparent 0px, transparent 6px, rgba(224, 188, 114, 0.4) 6px, rgba(224, 188, 114, 0.4) 8px, transparent 8px, transparent 22px );
+            border-left: 1px solid rgba(224, 188, 114, 0.34);
+            border-right: 1px solid rgba(224, 188, 114, 0.34);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .book-spine.parchment-spine .spine-title {
+            color: #2b1d12;
+            text-shadow: none;
+        }
+
+        .book-spine.parchment-spine .spine-vol {
+            color: #5c4028;
+        }
+
+        .read-ribbon {
+            position: absolute;
+            top: -3px;
+            right: 5px;
+            width: 4px;
+            height: 14px;
+            background: linear-gradient(180deg, #b91c1c, #5c0f0f);
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 76%, 0 100%);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+            z-index: 4;
+        }
+
+        .spine-top-foil {
+            width: 76%;
+            height: 3px;
+            border-top: 1px solid rgba(224, 188, 114, 0.6);
+            border-bottom: 1px solid rgba(224, 188, 114, 0.38);
+            position: relative;
+            z-index: 3;
+            flex-shrink: 0;
+        }
+
+        .spine-label-plate {
+            position: relative;
+            z-index: 3;
+            padding: 5px 2px;
+            max-height: 118px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spine-title {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 700;
+            font-size: 11.5px;
+            line-height: 1;
+            color: #f3e4c3;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.95);
+            max-height: 112px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: center;
+        }
+
+        .spine-vol {
+            font-family: 'Cinzel', serif;
+            font-size: 8px;
+            color: rgba(224, 188, 114, 0.85);
+            position: relative;
+            z-index: 3;
+        }
+
+        /* ================= НОВАЯ РЕАЛИСТИЧНАЯ 3D-АНИМАЦИЯ ВЫЛЕТА КНИГИ ================= */
+        .flying-3d-book {
+            position: fixed;
+            z-index: 999;
+            pointer-events: none;
+            perspective: 1400px;
+            transition: left 0.75s cubic-bezier(0.22, 1, 0.36, 1), top 0.75s cubic-bezier(0.22, 1, 0.36, 1), width 0.75s cubic-bezier(0.22, 1, 0.36, 1), height 0.75s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.28s ease;
+        }
+
+        .flying-book-body {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            border-radius: 4px 10px 10px 4px;
+            /* Стопка пожелтевших страниц сбоку */
+            background: linear-gradient(90deg, #e8d9b8 0%, #d4c094 85%, #b59f72 100%);
+            border: 2px solid #4a2e19;
+            box-shadow: 0 28px 65px rgba(0, 0, 0, 0.92), 0 0 35px rgba(212, 175, 55, 0.28);
+        }
+
+        /* Передняя обложка книги, которая раскрывается в полёте */
+        .flying-book-cover {
+            position: absolute;
+            inset: -2px;
+            border-radius: 4px 10px 10px 4px;
+            padding: 24px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            text-align: center;
+            transform-origin: left center;
+            transform: rotateY(0deg);
+            transition: transform 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+            box-shadow: inset 10px 0 18px rgba(0, 0, 0, 0.55), inset 0 0 0 8px rgba(0, 0, 0, 0.18);
+        }
+
+            .flying-book-cover::before {
+                content: "";
+                position: absolute;
+                inset: 12px;
+                border: 1.5px solid rgba(224, 188, 114, 0.55);
+                border-radius: 4px;
+                pointer-events: none;
+            }
+
+        .flying-3d-book.opening .flying-book-cover {
+            transform: rotateY(-135deg);
+        }
+
+        .fly-cover-ornament {
+            font-size: 16px;
+            color: #e6c67c;
+            letter-spacing: 5px;
+        }
+
+        .fly-cover-title {
+            font-family: 'Cinzel', serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #f5e6c4;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
+            line-height: 1.3;
+            max-height: 160px;
+            overflow: hidden;
+        }
+
+        .fly-cover-author {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 15px;
+            font-style: italic;
+            color: #e0c896;
+        }
+
+        .flying-book-cover.light-cover .fly-cover-title,
+        .flying-book-cover.light-cover .fly-cover-author,
+        .flying-book-cover.light-cover .fly-cover-ornament {
+            color: #2b1d12;
+            text-shadow: none;
+        }
+
+        /* ================= МОДАЛЬНОЕ ОКНО РАСКРЫТОЙ КНИГИ ================= */
+        .book-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(4, 3, 2, 0.88);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+
+            .book-modal-backdrop.open {
+                display: flex;
+                opacity: 1;
+            }
+
+        @keyframes openGrimoire {
+            from {
+                opacity: 0;
+                transform: scale(0.92);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .open-grimoire {
+            width: 100%;
+            max-width: 900px;
+            min-height: 520px;
+            background-color: #211309;
+            background-image: var(--leather-grain);
+            border: 3px solid #4a2e19;
+            border-radius: 12px;
+            padding: 14px;
+            box-shadow: 0 32px 85px rgba(0, 0, 0, 0.96);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            position: relative;
+            animation: openGrimoire 0.32s ease-out;
+        }
+
+            .open-grimoire::after {
+                content: "";
+                position: absolute;
+                top: 14px;
+                bottom: 14px;
+                left: 50%;
+                width: 30px;
+                transform: translateX(-50%);
+                background: linear-gradient( 90deg, transparent 0%, rgba(30, 18, 10, 0.25) 45%, rgba(15, 9, 4, 0.5) 50%, rgba(30, 18, 10, 0.25) 55%, transparent 100% );
+                pointer-events: none;
+            }
+
+        .page {
+            background: radial-gradient(circle at center, var(--parchment-light) 0%, var(--parchment-dark) 100%);
+            color: var(--ink);
+            padding: 34px 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .page-left {
+            border-radius: 6px 0 0 6px;
+            border-right: 1px solid rgba(90, 62, 34, 0.28);
+            text-align: center;
+        }
+
+        .page-right {
+            border-radius: 0 6px 6px 0;
+        }
+
+        .page-ornament-top {
+            font-size: 17px;
+            color: #7d5622;
+            letter-spacing: 6px;
+        }
+
+        .grimoire-title {
+            font-family: 'Cinzel', serif;
+            font-size: 25px;
+            font-weight: 700;
+            color: #1c120a;
+            line-height: 1.25;
+            margin: 14px 0 10px;
+        }
+
+        .grimoire-author {
+            font-size: 20px;
+            font-style: italic;
+            color: #543720;
+            margin-bottom: 18px;
+        }
+
+        .grimoire-status-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 999px;
+            font-family: 'Cinzel', serif;
+            font-size: 11px;
+            font-weight: 700;
+            background: rgba(34, 68, 48, 0.14);
+            border: 1px solid rgba(34, 68, 48, 0.4);
+            color: #1d422d;
+        }
+
+            .grimoire-status-badge.unread {
+                background: rgba(125, 86, 34, 0.14);
+                border-color: rgba(125, 86, 34, 0.4);
+                color: #634014;
+            }
+
+        .page-notes-label {
+            font-family: 'Cinzel', serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: #452a17;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(90, 62, 34, 0.25);
+            padding-bottom: 6px;
+        }
+
+        .page-notes-area {
+            flex: 1;
+            width: 100%;
+            min-height: 210px;
+            background: transparent;
+            border: none;
+            resize: none;
+            outline: none;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 19px;
+            line-height: 1.65;
+            color: #24160c;
+            background-image: repeating-linear-gradient( transparent, transparent 30px, rgba(112, 73, 23, 0.18) 31px );
+        }
+
+        .grimoire-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .grim-btn {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: 6px;
+            border: 1px solid #5e3b1e;
+            background: #29170b;
+            color: var(--brass-light);
+            font-family: 'Cinzel', serif;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+            .grim-btn:hover {
+                background: #3b2211;
+                border-color: var(--brass-light);
+            }
+
+            .grim-btn.secondary {
+                background: rgba(90, 62, 34, 0.15);
+                color: #362010;
+            }
+
+                .grim-btn.secondary:hover {
+                    background: rgba(90, 62, 34, 0.28);
+                }
+
+        /* ================= АДАПТАЦИЯ ПОД ТЕЛЕФОН ================= */
+        @media (max-width: 768px) {
+            .hall-header {
+                padding: 12px 14px;
+            }
+
+            .hall-title {
+                font-size: 17px;
+            }
+
+            .hall-search {
+                width: 100%;
+                font-size: 16px;
+            }
+
+            .library-wall {
+                border-left-width: 6px;
+                border-right-width: 6px;
+            }
+
+            .shelf-bay {
+                overflow-x: auto;
+                padding: 16px 10px 0;
+            }
+
+            .open-grimoire {
+                grid-template-columns: 1fr;
+                max-height: 88vh;
+                overflow-y: auto;
+            }
+
+                .open-grimoire::after {
+                    display: none;
+                }
+
+            .page-left {
+                border-radius: 6px 6px 0 0;
+                border-right: none;
+                border-bottom: 1px solid rgba(90, 62, 34, 0.25);
+                padding: 20px 16px;
+            }
+
+            .page-right {
+                border-radius: 0 0 6px 6px;
+                padding: 20px 16px;
+            }
+
+            .grimoire-title {
+                font-size: 21px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="hall-header">
+        <div class="hall-title-wrap">
+            <a href="index.html" class="back-link">← В кабинет</a>
+            <div>
+                <div class="hall-title">Вавилонская библиотека</div>
+                <div class="hall-subtitle">Старинный архив — нажмите на любой корешок, чтобы раскрыть том</div>
+            </div>
+        </div>
+
+        <div class="hall-controls">
+            <input id="hallSearch" class="hall-search" oninput="resetAndRender()" placeholder="Найти фолиант...">
+            <button class="filter-pill active" onclick="setShelfFilter('all', this)">Все тома</button>
+            <button class="filter-pill" onclick="setShelfFilter('unread', this)">В планах</button>
+            <button class="filter-pill" onclick="setShelfFilter('read', this)">Прочитанные</button>
+        </div>
+    </header>
+
+    <main id="libraryWall" class="library-wall"></main>
+
+    <!-- Модальное окно раскрытой книги -->
+    <div id="bookModal" class="book-modal-backdrop" onclick="closeGrimoire(event)">
+        <div class="open-grimoire" onclick="event.stopPropagation()">
+            <div class="page page-left">
+                <div class="page-ornament-top">❦ ✦ ❦</div>
+                <div>
+                    <div id="grimTitle" class="grimoire-title">Название книги</div>
+                    <div id="grimAuthor" class="grimoire-author">Автор</div>
+                    <div id="grimStatus" class="grimoire-status-badge">В планах</div>
+                </div>
+                <div class="page-ornament-top">~ Ex Libris ~</div>
+            </div>
+
+            <div class="page page-right">
+                <div style="display:flex; flex-direction:column; flex:1;">
+                    <div class="page-notes-label">Заметки и цитаты на полях</div>
+                    <textarea id="grimNotes" class="page-notes-area" oninput="saveBookNote()" placeholder="Запишите сюда свои мысли, впечатления или любимую цитату..."></textarea>
+                </div>
+
+                <div class="grimoire-actions">
+                    <button id="grimToggleBtn" class="grim-btn" onclick="toggleCurrentBookRead()">Отметить прочитанной</button>
+                    <button class="grim-btn secondary" onclick="closeGrimoire()">Вернуть на полку</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+                let allBooks = [];
+                let filteredBooks = [];
+                let shelfFilter = 'all';
+                let activeBook = null;
+                let renderedTiersCount = 0;
+                let bookCursorIndex = 0;
+
+                // Благородные, насыщенные старинные цвета переплётов: красный, янтарно-жёлтый, изумрудный, сапфировый, бордовый, терракотовый, пергамент
+                const spinePalettes = [
+                    { bg: 'linear-gradient(180deg, #8b2626 0%, #4d1212 100%)', light: false }, // Рубиново-красный сафьян
+                    { bg: 'linear-gradient(180deg, #b5842c 0%, #6e4e15 100%)', light: false }, // Тёплый янтарно-жёлтый
+                    { bg: 'linear-gradient(180deg, #1f543e 0%, #0f2b1f 100%)', light: false }, // Глубокий изумрудный
+                    { bg: 'linear-gradient(180deg, #213d5c 0%, #101f30 100%)', light: false }, // Сапфирово-синий
+                    { bg: 'linear-gradient(180deg, #9c4221 0%, #57220f 100%)', light: false }, // Терракотово-медный
+                    { bg: 'linear-gradient(180deg, #691b2c 0%, #380c16 100%)', light: false }, // Винно-бордовый
+                    { bg: 'linear-gradient(180deg, #c9a642 0%, #82671f 100%)', light: false }, // Золотисто-охристый
+                    { bg: 'linear-gradient(180deg, #d8c7a3 0%, #ab9974 100%)', light: true }   // Старый пергамент
+                ];
+
+                function getCurrentUser() {
+                    const raw = localStorage.getItem('booktracker_user');
+                    return raw ? JSON.parse(raw) : null;
+                }
+
+                function authHeaders() {
+                    const user = getCurrentUser();
+                    return { 'X-User-Id': user ? String(user.userId) : '0' };
+                }
+
+                function hashBook(str) {
+                    let hash = 0;
+                    for (let i = 0; i < str.length; i++) {
+                        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+                    }
+                    return Math.abs(hash);
+                }
+
+                function getPaletteForBook(book, index) {
+                    const h = hashBook(book.title + book.autor);
+                    // Комбинируем хэш и порядковый номер, чтобы соседние книги не были одинакового цвета
+                    const paletteIndex = (h + index * 3) % spinePalettes.length;
+                    return spinePalettes[paletteIndex];
+                }
+
+                async function fetchBooks() {
+                    const user = getCurrentUser();
+                    if (!user || !user.userId) {
+                        window.location.href = 'index.html';
+                        return;
+                    }
+
+                    const res = await fetch('/api/books', { headers: authHeaders() });
+                    if (res.status === 401) {
+                        window.location.href = 'index.html';
+                        return;
+                    }
+
+                    allBooks = await res.json();
+                    resetAndRender();
+                }
+
+                function setShelfFilter(filter, btn) {
+                    shelfFilter = filter;
+                    document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    resetAndRender();
+                }
+
+                function createBookSpine(book, volNumber) {
+                    const h = hashBook(book.title + book.autor);
+                    const width = 26 + (h % 16);
+                    const height = 148 + (h % 34);
+                    const palette = getPaletteForBook(book, volNumber);
+
+                    const spine = document.createElement('div');
+                    spine.className = `book-spine ${palette.light ? 'parchment-spine' : ''}`;
+                    spine.style.width = `${width}px`;
+                    spine.style.height = `${height}px`;
+                    spine.style.background = palette.bg;
+
+                    const ribs = document.createElement('div');
+                    ribs.className = 'spine-ribs';
+                    spine.appendChild(ribs);
+
+                    const ornamentTypes = ['ornament-diamonds', 'ornament-frame', 'ornament-squares', ''];
+                    const ornClass = ornamentTypes[h % ornamentTypes.length];
+                    if (ornClass) {
+                        const orn = document.createElement('div');
+                        orn.className = ornClass;
+                        spine.appendChild(orn);
+                    }
+
+                    if (book.isRead) {
+                        const ribbon = document.createElement('div');
+                        ribbon.className = 'read-ribbon';
+                        spine.appendChild(ribbon);
+                    }
+
+                    const topFoil = document.createElement('div');
+                    topFoil.className = 'spine-top-foil';
+
+                    const labelPlate = document.createElement('div');
+                    labelPlate.className = 'spine-label-plate';
+
+                    const titleEl = document.createElement('div');
+                    titleEl.className = 'spine-title';
+                    titleEl.textContent = book.title;
+                    labelPlate.appendChild(titleEl);
+
+                    const volEl = document.createElement('div');
+                    volEl.className = 'spine-vol';
+                    volEl.textContent = volNumber;
+
+                    spine.appendChild(topFoil);
+                    spine.appendChild(labelPlate);
+                    spine.appendChild(volEl);
+
+                    spine.addEventListener('click', () => summonBook(book, spine, palette));
+
+                    return spine;
+                }
+
+                function resetAndRender() {
+                    const query = document.getElementById('hallSearch').value.trim().toLowerCase();
+                    filteredBooks = allBooks.filter(b => {
+                        if (shelfFilter === 'read' && !b.isRead) return false;
+                        if (shelfFilter === 'unread' && b.isRead) return false;
+                        if (query) {
+                            const matchTitle = b.title.toLowerCase().includes(query);
+                            const matchAuthor = b.autor.toLowerCase().includes(query);
+                            if (!matchTitle && !matchAuthor) return false;
+                        }
+                        return true;
+                    });
+
+                    document.getElementById('libraryWall').innerHTML = '';
+                    renderedTiersCount = 0;
+                    bookCursorIndex = 0;
+
+                    // Сразу заполняем с самой первой полки!
+                    appendShelfTiers(6);
+                }
+
+                function appendShelfTiers(count) {
+                    const wall = document.getElementById('libraryWall');
+
+                    for (let t = 0; t < count; t++) {
+                        renderedTiersCount++;
+
+                        const tier = document.createElement('div');
+                        tier.className = 'shelf-tier';
+
+                        const bay = document.createElement('div');
+                        bay.className = 'shelf-bay';
+
+                        if (bookCursorIndex < filteredBooks.length) {
+                            const booksOnShelf = Math.min(28, filteredBooks.length - bookCursorIndex);
+                            for (let k = 0; k < booksOnShelf; k++) {
+                                const book = filteredBooks[bookCursorIndex++];
+                                bay.appendChild(createBookSpine(book, bookCursorIndex));
+                            }
+                        }
+
+                        attachDockWaveEffect(bay);
+
+                        const board = document.createElement('div');
+                        board.className = 'shelf-board';
+
+                        tier.appendChild(bay);
+                        tier.appendChild(board);
+                        wall.appendChild(tier);
+                    }
+                }
+
+                window.addEventListener('scroll', () => {
+                    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 350) {
+                        appendShelfTiers(3);
+                    }
+                });
+
+                function attachDockWaveEffect(bay) {
+                    bay.addEventListener('mousemove', (e) => {
+                        const spines = bay.querySelectorAll('.book-spine');
+                        spines.forEach(spine => {
+                            const rect = spine.getBoundingClientRect();
+                            const centerX = rect.left + rect.width / 2;
+                            const dist = Math.abs(e.clientX - centerX);
+                            const maxDist = 110;
+
+                            if (dist < maxDist) {
+                                const factor = 1 - dist / maxDist;
+                                const lift = factor * 16;
+                                const scale = 1 + factor * 0.14;
+                                const shiftX = (centerX < e.clientX ? -1 : 1) * factor * 4;
+                                spine.style.transform = `translate(${shiftX}px, -${lift}px) scale(${scale})`;
+                                spine.style.zIndex = Math.round(10 + factor * 20);
+                                spine.style.boxShadow = `0 18px 32px rgba(0, 0, 0, 0.98)`;
+                            } else {
+                                spine.style.transform = '';
+                                spine.style.zIndex = 1;
+                                spine.style.boxShadow = '';
+                            }
+                        });
+                    });
+
+                    bay.addEventListener('mouseleave', () => {
+                        bay.querySelectorAll('.book-spine').forEach(spine => {
+                            spine.style.transform = '';
+                            spine.style.zIndex = 1;
+                            spine.style.boxShadow = '';
+                        });
+                    });
+                }
+
+                // Реалистичный вылет настоящей 3D-книги с обложкой и раскрытием
+                function summonBook(book, spineElement, palette) {
+                    const rect = spineElement.getBoundingClientRect();
+
+                    const flyingBook = document.createElement('div');
+                    flyingBook.className = 'flying-3d-book';
+                    flyingBook.style.left = `${rect.left}px`;
+                    flyingBook.style.top = `${rect.top}px`;
+                    flyingBook.style.width = `${rect.width}px`;
+                    flyingBook.style.height = `${rect.height}px`;
+
+                    const body = document.createElement('div');
+                    body.className = 'flying-book-body';
+
+                    const cover = document.createElement('div');
+                    cover.className = `flying-book-cover ${palette.light ? 'light-cover' : ''}`;
+                    cover.style.background = palette.bg;
+
+                    const orn = document.createElement('div');
+                    orn.className = 'fly-cover-ornament';
+                    orn.textContent = '❦ ✦ ❦';
+
+                    const title = document.createElement('div');
+                    title.className = 'fly-cover-title';
+                    title.textContent = book.title;
+
+                    const author = document.createElement('div');
+                    author.className = 'fly-cover-author';
+                    author.textContent = book.autor;
+
+                    cover.appendChild(orn);
+                    cover.appendChild(title);
+                    cover.appendChild(author);
+                    body.appendChild(cover);
+                    flyingBook.appendChild(body);
+                    document.body.appendChild(flyingBook);
+
+                    // Шаг 1: Книга вылетает в центр и принимает пропорции реальной обложки
+                    requestAnimationFrame(() => {
+                        const targetW = Math.min(280, window.innerWidth * 0.62);
+                        const targetH = Math.min(390, window.innerHeight * 0.64);
+                        flyingBook.style.left = `${(window.innerWidth - targetW) / 2}px`;
+                        flyingBook.style.top = `${(window.innerHeight - targetH) / 2}px`;
+                        flyingBook.style.width = `${targetW}px`;
+                        flyingBook.style.height = `${targetH}px`;
+
+                        // Шаг 2: В середине полёта передняя обложка плавно открывается
+                        setTimeout(() => {
+                            flyingBook.classList.add('opening');
+                        }, 260);
+                    });
+
+                    // Шаг 3: Появляются раскрытые страницы с заметками
+                    setTimeout(() => {
+                        flyingBook.style.opacity = '0';
+                        openGrimoire(book);
+                        setTimeout(() => flyingBook.remove(), 300);
+                    }, 720);
+                }
+
+                function openGrimoire(book) {
+                    activeBook = book;
+                    document.getElementById('grimTitle').textContent = book.title;
+                    document.getElementById('grimAuthor').textContent = book.autor;
+
+                    const statusBadge = document.getElementById('grimStatus');
+                    const toggleBtn = document.getElementById('grimToggleBtn');
+
+                    if (book.isRead) {
+                        const dateStr = book.readDate ? ` (${new Date(book.readDate).toLocaleDateString('ru-RU')})` : '';
+                        statusBadge.textContent = `✓ Прочитано${dateStr}`;
+                        statusBadge.classList.remove('unread');
+                        toggleBtn.textContent = 'Вернуть в планы';
+                    } else {
+                        statusBadge.textContent = '◷ В планах на чтение';
+                        statusBadge.classList.add('unread');
+                        toggleBtn.textContent = 'Отметить прочитанной';
+                    }
+
+                    const savedNote = localStorage.getItem(`book_note_${book.id}`) || '';
+                    document.getElementById('grimNotes').value = savedNote;
+
+                    document.getElementById('bookModal').classList.add('open');
+                }
+
+                function saveBookNote() {
+                    if (!activeBook) return;
+                    const text = document.getElementById('grimNotes').value;
+                    localStorage.setItem(`book_note_${activeBook.id}`, text);
+                }
+
+                async function toggleCurrentBookRead() {
+                    if (!activeBook) return;
+                    const res = await fetch(`/api/books/${activeBook.id}`, {
+                        method: 'PUT',
+                        headers: authHeaders()
+                    });
+                    if (res.ok) {
+                        const updated = await res.json();
+                        activeBook = updated;
+                        openGrimoire(updated);
+                        fetchBooks();
+                    }
+                }
+
+                function closeGrimoire(event) {
+                    if (event && event.target !== document.getElementById('bookModal')) return;
+                    document.getElementById('bookModal').classList.remove('open');
+                    activeBook = null;
+                }
+
+                fetchBooks();
+    </script>
+</body>
+</html>
