@@ -689,10 +689,28 @@
             word-break: break-word;
         }
 
+        .book-meta-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            margin-top: 3px;
+        }
+
+        .book-genre-pill {
+            display: inline-block;
+            padding: 1px 8px;
+            border-radius: 6px;
+            background: rgba(184, 148, 70, 0.14);
+            border: 1px solid rgba(184, 148, 70, 0.32);
+            color: var(--gold-bright);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
         .book-date {
             font-size: 13px;
             color: #6ee7b7;
-            margin-top: 2px;
         }
 
         .actions {
@@ -1110,6 +1128,17 @@
                             <label class="field-label">Автор</label>
                             <input id="authorInput" placeholder="Например: Эндрю Хант">
                         </div>
+                        <div>
+                            <label class="field-label">Жанр или полка (необязательно)</label>
+                            <input id="genreInput" list="genreSuggestions" placeholder="Выберите или напишите свой...">
+                            <datalist id="genreSuggestions">
+                                <option value="IT и программирование">
+                                <option value="Английский язык">
+                                <option value="Художественная литература">
+                                <option value="Психология и саморазвитие">
+                                <option value="История">
+                            </datalist>
+                        </div>
                         <button class="submit-btn" onclick="addBook()">Поставить на полку</button>
                     </div>
                 </section>
@@ -1291,12 +1320,29 @@
                         info.appendChild(title);
                         info.appendChild(author);
 
-                        if (book.isRead && book.readDate) {
-                            const date = document.createElement('div');
-                            date.className = 'book-date';
-                            const formattedDate = new Date(book.readDate).toLocaleDateString('ru-RU');
-                            date.textContent = `Прочитано ${formattedDate}`;
-                            info.appendChild(date);
+                        const hasGenre = book.genre && book.genre.trim() !== '';
+                        const hasDate = book.isRead && book.readDate;
+
+                        if (hasGenre || hasDate) {
+                            const metaRow = document.createElement('div');
+                            metaRow.className = 'book-meta-row';
+
+                            if (hasGenre) {
+                                const genrePill = document.createElement('span');
+                                genrePill.className = 'book-genre-pill';
+                                genrePill.textContent = book.genre;
+                                metaRow.appendChild(genrePill);
+                            }
+
+                            if (hasDate) {
+                                const date = document.createElement('span');
+                                date.className = 'book-date';
+                                const formattedDate = new Date(book.readDate).toLocaleDateString('ru-RU');
+                                date.textContent = `Прочитано ${formattedDate}`;
+                                metaRow.appendChild(date);
+                            }
+
+                            info.appendChild(metaRow);
                         }
 
                         left.appendChild(num);
@@ -1330,16 +1376,23 @@
                 async function addBook() {
                     const title = document.getElementById('titleInput').value;
                     const author = document.getElementById('authorInput').value;
+                    const genre = document.getElementById('genreInput').value;
                     if (!title || !author) return;
 
                     await fetch('/api/books', {
                         method: 'POST',
                         headers: authHeaders({ 'Content-Type': 'application/json' }),
-                        body: JSON.stringify({ title: title, autor: author, isRead: false })
+                        body: JSON.stringify({
+                            title: title,
+                            autor: author,
+                            genre: genre.trim() === '' ? null : genre.trim(),
+                            isRead: false
+                        })
                     });
 
                     document.getElementById('titleInput').value = '';
                     document.getElementById('authorInput').value = '';
+                    document.getElementById('genreInput').value = '';
                     loadBooks();
                 }
 

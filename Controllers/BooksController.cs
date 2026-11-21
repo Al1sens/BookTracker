@@ -24,40 +24,39 @@ namespace BookTracker.Controllers
             return userId;
         }
 
-        // ШАГ 2: Отдаём только книги вошедшего пользователя
+        // ШАГ 2: Отдаём книги пользователя с фильтрацией по статусу, поиску и жанру
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Book>>> GetBooks(string? status, string? search)
+        public async Task<ActionResult<IEnumerable<Book>>> GetBooks(
+            [FromQuery] string? status = null,
+            [FromQuery] string? search = null,
+            [FromQuery] string? genre = null)
         {
             int userId = GetCurrentUserId();
             if (userId == 0)
-                return Unauthorized("Сначала войдите в аккаунт.");
+                return Unauthorized();
 
-            var allBooks = await _context.Books.ToListAsync();
-            var result = new List<Book>();
+            var query = _context.Books.Where(b => b.UserId == userId);
 
-            foreach (var book in allBooks)
+            if (status == "read")
+                query = query.Where(b => b.IsRead);
+            else if (status == "unread")
+                query = query.Where(b => !b.IsRead);
+
+            if (!string.IsNullOrWhiteSpace(search))
             {
-                if (book.UserId != userId)
-                    continue;
-
-                if (status == "read" && !book.IsRead)
-                    continue;
-
-                if (status == "unread" && book.IsRead)
-                    continue;
-
-                if (!string.IsNullOrWhiteSpace(search))
-                {
-                    bool matchTitle = book.Title.Contains(search, StringComparison.OrdinalIgnoreCase);
-                    bool matchAuthor = book.Autor.Contains(search, StringComparison.OrdinalIgnoreCase);
-                    if (!matchTitle && !matchAuthor)
-                        continue;
-                }
-
-                result.Add(book);
+                var s = search.ToLower();
+                query = query.Where(b => b.Title.ToLower().Contains(s) || b.Autor.ToLower().Contains(s));
             }
 
-            return Ok(result);
+            if (!string.IsNullOrWhiteSpace(genre))
+            {
+                if (genre == "none")
+                    query = query.Where(b => string.IsNullOrEmpty(b.Genre));
+                else
+                    query = query.Where(b => b.Genre == genre);
+            }
+
+            return await query.OrderByDescending(b => b.Id).ToListAsync();
         }
 
         // ШАГ 3: Статистика только по книгам текущего пользователя
@@ -90,7 +89,7 @@ namespace BookTracker.Controllers
             return Ok(new { totalRead, averagePerMonth });
         }
 
-        // ШАГ 4: Привязываем новую книгу к текущему пользователю
+        // ШАГ 4: Привязываем новую книгу и её жанр к текущему пользователю
         [HttpPost]
         public async Task<ActionResult<Book>> AddBook(Book book)
         {
@@ -99,6 +98,9 @@ namespace BookTracker.Controllers
                 return Unauthorized();
 
             book.UserId = userId;
+            // Если поле жанра оставили пустым — записываем в базу null
+            book.Genre = string.IsNullOrWhiteSpace(book.Genre) ? null : book.Genre.Trim();
+
             _context.Books.Add(book);
             await _context.SaveChangesAsync();
             return Ok(book);

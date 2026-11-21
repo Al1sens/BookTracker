@@ -34,6 +34,9 @@ namespace BookTracker.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Genre")
+                        .HasColumnType("text");
+
                     b.Property<bool>("IsRead")
                         .HasColumnType("boolean");
 

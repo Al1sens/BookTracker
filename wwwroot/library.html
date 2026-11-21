@@ -20,8 +20,8 @@
             --parchment-light: #efe3c8;
             --parchment-dark: #d6c298;
             --ink: #22170f;
-            --wood-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012 0.28' numOctaves='4' seed='9'/%3E%3CfeColorMatrix type='matrix' values='0.32 0 0 0 0.12  0 0.20 0 0 0.07  0 0 0.10 0 0.03  0 0 0 0.65 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3C/svg%3E");
-            --leather-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='l'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' seed='4'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23l)'/%3E%3C/svg%3E");
+            --wood-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/200/svg' width='320' height='320'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012 0.28' numOctaves='4' seed='9'/%3E%3CfeColorMatrix type='matrix' values='0.32 0 0 0 0.12  0 0.20 0 0 0.07  0 0 0.10 0 0.03  0 0 0 0.65 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3C/svg%3E");
+            --leather-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/200/svg' width='180' height='180'%3E%3Cfilter id='l'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' seed='4'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23l)'/%3E%3C/svg%3E");
         }
 
         body {
@@ -97,7 +97,7 @@
 
         .hall-search {
             padding: 6px 12px;
-            width: 220px;
+            width: 210px;
             border-radius: 6px;
             background: #090604;
             border: 1px solid rgba(184, 148, 70, 0.26);
@@ -111,7 +111,7 @@
                 border-color: var(--brass-light);
             }
 
-        .filter-pill {
+        .filter-pill, .mode-pill {
             padding: 5px 12px;
             border-radius: 6px;
             border: 1px solid rgba(184, 148, 70, 0.18);
@@ -130,6 +130,19 @@
                 border-color: var(--brass);
                 color: var(--brass-light);
             }
+
+        .mode-divider {
+            width: 1px;
+            height: 22px;
+            background: rgba(184, 148, 70, 0.25);
+            margin: 0 2px;
+        }
+
+        .mode-pill.active {
+            background: linear-gradient(180deg, #3b2613 0%, #24160a 100%);
+            border-color: var(--brass-light);
+            color: #f3dfb0;
+        }
 
         /* ================= СПЛОШНАЯ СТЕНА СТАРИННЫХ КНИЖНЫХ ПОЛОК ================= */
         .library-wall {
@@ -165,7 +178,7 @@
         }
 
         .shelf-board {
-            height: 17px;
+            min-height: 22px;
             width: 100%;
             background-color: #26160c;
             background-image: var(--wood-grain), linear-gradient(180deg, #422918 0%, #331f12 24%, #21130a 72%, #0f0804 100% );
@@ -174,6 +187,24 @@
             box-shadow: 0 16px 24px rgba(0, 0, 0, 0.98), 0 4px 8px rgba(0, 0, 0, 0.9);
             position: relative;
             z-index: 4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Латунная табличка с названием жанра на доске полки */
+        .brass-genre-plaque {
+            padding: 2px 16px;
+            background: linear-gradient(180deg, #422c14 0%, #241609 100%);
+            border: 1px solid rgba(220, 192, 124, 0.55);
+            border-radius: 3px;
+            color: var(--brass-light);
+            font-family: 'Cinzel', serif;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
         }
 
         /* ================= СТАРИННЫЕ КОЖАНЫЕ КОРЕШКИ ================= */
@@ -304,7 +335,7 @@
             z-index: 3;
         }
 
-        /* ================= НОВАЯ РЕАЛИСТИЧНАЯ 3D-АНИМАЦИЯ ВЫЛЕТА КНИГИ ================= */
+        /* ================= 3D-АНИМАЦИЯ ВЫЛЕТА КНИГИ ================= */
         .flying-3d-book {
             position: fixed;
             z-index: 999;
@@ -319,13 +350,11 @@
             position: relative;
             transform-style: preserve-3d;
             border-radius: 4px 10px 10px 4px;
-            /* Стопка пожелтевших страниц сбоку */
             background: linear-gradient(90deg, #e8d9b8 0%, #d4c094 85%, #b59f72 100%);
             border: 2px solid #4a2e19;
             box-shadow: 0 28px 65px rgba(0, 0, 0, 0.92), 0 0 35px rgba(212, 175, 55, 0.28);
         }
 
-        /* Передняя обложка книги, которая раскрывается в полёте */
         .flying-book-cover {
             position: absolute;
             inset: -2px;
@@ -472,13 +501,25 @@
             letter-spacing: 6px;
         }
 
+        .grimoire-genre-tag {
+            display: inline-block;
+            margin-bottom: 6px;
+            padding: 3px 12px;
+            border-radius: 4px;
+            background: rgba(125, 86, 34, 0.16);
+            color: #6b4718;
+            font-family: 'Cinzel', serif;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
         .grimoire-title {
             font-family: 'Cinzel', serif;
             font-size: 25px;
             font-weight: 700;
             color: #1c120a;
             line-height: 1.25;
-            margin: 14px 0 10px;
+            margin: 10px 0 10px;
         }
 
         .grimoire-author {
@@ -569,16 +610,49 @@
         /* ================= АДАПТАЦИЯ ПОД ТЕЛЕФОН ================= */
         @media (max-width: 768px) {
             .hall-header {
-                padding: 12px 14px;
+                padding: 10px 12px;
+                gap: 8px;
+            }
+
+            .hall-title-wrap {
+                width: 100%;
+                justify-content: space-between;
+                gap: 8px;
+            }
+
+            .back-link {
+                padding: 5px 10px;
+                font-size: 11px;
+                flex-shrink: 0;
             }
 
             .hall-title {
-                font-size: 17px;
+                font-size: 16px;
+                text-align: right;
+            }
+
+            .hall-subtitle, .mode-divider {
+                display: none;
+            }
+
+            .hall-controls {
+                width: 100%;
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
             }
 
             .hall-search {
+                grid-column: 1 / -1;
                 width: 100%;
                 font-size: 16px;
+                padding: 7px 11px;
+            }
+
+            .filter-pill, .mode-pill {
+                text-align: center;
+                padding: 6px 4px;
+                font-size: 13.5px;
             }
 
             .library-wall {
@@ -587,14 +661,28 @@
             }
 
             .shelf-bay {
+                height: 164px;
+                padding: 14px 8px 0;
+                gap: 2px;
                 overflow-x: auto;
-                padding: 16px 10px 0;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .book-spine {
+                max-height: 142px;
+            }
+
+            .spine-title {
+                font-size: 10.5px;
+                max-height: 92px;
             }
 
             .open-grimoire {
                 grid-template-columns: 1fr;
+                min-height: auto;
                 max-height: 88vh;
                 overflow-y: auto;
+                padding: 10px;
             }
 
                 .open-grimoire::after {
@@ -605,16 +693,31 @@
                 border-radius: 6px 6px 0 0;
                 border-right: none;
                 border-bottom: 1px solid rgba(90, 62, 34, 0.25);
-                padding: 20px 16px;
+                padding: 18px 14px;
             }
 
             .page-right {
                 border-radius: 0 0 6px 6px;
-                padding: 20px 16px;
+                padding: 18px 14px;
             }
 
             .grimoire-title {
-                font-size: 21px;
+                font-size: 20px;
+                margin: 8px 0 6px;
+            }
+
+            .grimoire-author {
+                font-size: 17px;
+                margin-bottom: 12px;
+            }
+
+            .page-notes-area {
+                min-height: 150px;
+                font-size: 17px;
+            }
+
+            .grimoire-actions {
+                flex-direction: column;
             }
         }
     </style>
@@ -634,6 +737,9 @@
             <button class="filter-pill active" onclick="setShelfFilter('all', this)">Все тома</button>
             <button class="filter-pill" onclick="setShelfFilter('unread', this)">В планах</button>
             <button class="filter-pill" onclick="setShelfFilter('read', this)">Прочитанные</button>
+            <div class="mode-divider"></div>
+            <button class="mode-pill active" onclick="setViewMode('general', this)">Общий зал</button>
+            <button class="mode-pill" onclick="setViewMode('genres', this)">По жанрам</button>
         </div>
     </header>
 
@@ -645,6 +751,7 @@
             <div class="page page-left">
                 <div class="page-ornament-top">❦ ✦ ❦</div>
                 <div>
+                    <div id="grimGenre" class="grimoire-genre-tag" style="display:none;">Жанр</div>
                     <div id="grimTitle" class="grimoire-title">Название книги</div>
                     <div id="grimAuthor" class="grimoire-author">Автор</div>
                     <div id="grimStatus" class="grimoire-status-badge">В планах</div>
@@ -670,18 +777,18 @@
                 let allBooks = [];
                 let filteredBooks = [];
                 let shelfFilter = 'all';
+                let viewMode = 'general'; // 'general' или 'genres'
                 let activeBook = null;
                 let renderedTiersCount = 0;
                 let bookCursorIndex = 0;
 
-                // Благородные, насыщенные старинные цвета переплётов: красный, янтарно-жёлтый, изумрудный, сапфировый, бордовый, терракотовый, пергамент
                 const spinePalettes = [
-                    { bg: 'linear-gradient(180deg, #8b2626 0%, #4d1212 100%)', light: false }, // Рубиново-красный сафьян
-                    { bg: 'linear-gradient(180deg, #b5842c 0%, #6e4e15 100%)', light: false }, // Тёплый янтарно-жёлтый
-                    { bg: 'linear-gradient(180deg, #1f543e 0%, #0f2b1f 100%)', light: false }, // Глубокий изумрудный
+                    { bg: 'linear-gradient(180deg, #8b2626 0%, #4d1212 100%)', light: false }, // Рубиново-красный
+                    { bg: 'linear-gradient(180deg, #b5842c 0%, #6e4e15 100%)', light: false }, // Янтарно-жёлтый
+                    { bg: 'linear-gradient(180deg, #1f543e 0%, #0f2b1f 100%)', light: false }, // Изумрудный
                     { bg: 'linear-gradient(180deg, #213d5c 0%, #101f30 100%)', light: false }, // Сапфирово-синий
-                    { bg: 'linear-gradient(180deg, #9c4221 0%, #57220f 100%)', light: false }, // Терракотово-медный
-                    { bg: 'linear-gradient(180deg, #691b2c 0%, #380c16 100%)', light: false }, // Винно-бордовый
+                    { bg: 'linear-gradient(180deg, #9c4221 0%, #57220f 100%)', light: false }, // Терракотовый
+                    { bg: 'linear-gradient(180deg, #691b2c 0%, #380c16 100%)', light: false }, // Бордовый
                     { bg: 'linear-gradient(180deg, #c9a642 0%, #82671f 100%)', light: false }, // Золотисто-охристый
                     { bg: 'linear-gradient(180deg, #d8c7a3 0%, #ab9974 100%)', light: true }   // Старый пергамент
                 ];
@@ -706,7 +813,6 @@
 
                 function getPaletteForBook(book, index) {
                     const h = hashBook(book.title + book.autor);
-                    // Комбинируем хэш и порядковый номер, чтобы соседние книги не были одинакового цвета
                     const paletteIndex = (h + index * 3) % spinePalettes.length;
                     return spinePalettes[paletteIndex];
                 }
@@ -731,6 +837,13 @@
                 function setShelfFilter(filter, btn) {
                     shelfFilter = filter;
                     document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    resetAndRender();
+                }
+
+                function setViewMode(mode, btn) {
+                    viewMode = mode;
+                    document.querySelectorAll('.mode-pill').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     resetAndRender();
                 }
@@ -796,21 +909,28 @@
                         if (shelfFilter === 'unread' && b.isRead) return false;
                         if (query) {
                             const matchTitle = b.title.toLowerCase().includes(query);
-                            const matchAuthor = b.autor.toLowerCase().includes(query);
-                            if (!matchTitle && !matchAuthor) return false;
+                            const matchAuthor = b.autor.toLower().includes(query);
+                            const matchGenre = (b.genre || '').toLowerCase().includes(query);
+                            if (!matchTitle && !matchAuthor && !matchGenre) return false;
                         }
                         return true;
                     });
 
-                    document.getElementById('libraryWall').innerHTML = '';
+                    const wall = document.getElementById('libraryWall');
+                    wall.innerHTML = '';
                     renderedTiersCount = 0;
                     bookCursorIndex = 0;
 
-                    // Сразу заполняем с самой первой полки!
-                    appendShelfTiers(6);
+                    if (viewMode === 'genres') {
+                        renderGenreShelves(wall);
+                    } else {
+                        appendShelfTiers(6);
+                    }
                 }
 
+                // Режим 1: Общий зал (все книги подряд на бесконечных полках)
                 function appendShelfTiers(count) {
+                    if (viewMode !== 'general') return;
                     const wall = document.getElementById('libraryWall');
 
                     for (let t = 0; t < count; t++) {
@@ -841,8 +961,71 @@
                     }
                 }
 
+                // Режим 2: По жанрам (каждый жанр выстраивается на своей полке с латунной табличкой)
+                function renderGenreShelves(wall) {
+                    const groups = {};
+                    filteredBooks.forEach(book => {
+                        const key = (book.genre && book.genre.trim() !== '') ? book.genre.trim() : 'Общий фонд (без жанра)';
+                        if (!groups[key]) groups[key] = [];
+                        groups[key].push(book);
+                    });
+
+                    const genreNames = Object.keys(groups);
+
+                    if (genreNames.length === 0) {
+                        appendEmptyTiers(wall, 4);
+                        return;
+                    }
+
+                    genreNames.forEach(genreName => {
+                        const booksInGenre = groups[genreName];
+                        const tier = document.createElement('div');
+                        tier.className = 'shelf-tier';
+
+                        const bay = document.createElement('div');
+                        bay.className = 'shelf-bay';
+
+                        booksInGenre.forEach((book, idx) => {
+                            bay.appendChild(createBookSpine(book, idx + 1));
+                        });
+
+                        attachDockWaveEffect(bay);
+
+                        const board = document.createElement('div');
+                        board.className = 'shelf-board';
+
+                        const plaque = document.createElement('div');
+                        plaque.className = 'brass-genre-plaque';
+                        plaque.textContent = `${genreName} (${booksInGenre.length})`;
+                        board.appendChild(plaque);
+
+                        tier.appendChild(bay);
+                        tier.appendChild(board);
+                        wall.appendChild(tier);
+                    });
+
+                    // Дорисовываем пару пустых декоративных полок снизу, чтобы шкаф выглядел цельным
+                    if (genreNames.length < 4) {
+                        appendEmptyTiers(wall, 4 - genreNames.length);
+                    }
+                }
+
+                function appendEmptyTiers(wall, count) {
+                    for (let i = 0; i < count; i++) {
+                        const tier = document.createElement('div');
+                        tier.className = 'shelf-tier';
+                        const bay = document.createElement('div');
+                        bay.className = 'shelf-bay';
+                        const board = document.createElement('div');
+                        board.className = 'shelf-board';
+                        tier.appendChild(bay);
+                        tier.appendChild(board);
+                        wall.appendChild(tier);
+                    }
+                }
+
                 window.addEventListener('scroll', () => {
-                    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 350) {
+                    if (viewMode === 'general' && window.innerHeight + window.scrollY >= document.body.offsetHeight - 350) {
                         appendShelfTiers(3);
                     }
                 });
@@ -881,7 +1064,6 @@
                     });
                 }
 
-                // Реалистичный вылет настоящей 3D-книги с обложкой и раскрытием
                 function summonBook(book, spineElement, palette) {
                     const rect = spineElement.getBoundingClientRect();
 
@@ -918,7 +1100,6 @@
                     flyingBook.appendChild(body);
                     document.body.appendChild(flyingBook);
 
-                    // Шаг 1: Книга вылетает в центр и принимает пропорции реальной обложки
                     requestAnimationFrame(() => {
                         const targetW = Math.min(280, window.innerWidth * 0.62);
                         const targetH = Math.min(390, window.innerHeight * 0.64);
@@ -927,13 +1108,11 @@
                         flyingBook.style.width = `${targetW}px`;
                         flyingBook.style.height = `${targetH}px`;
 
-                        // Шаг 2: В середине полёта передняя обложка плавно открывается
                         setTimeout(() => {
                             flyingBook.classList.add('opening');
                         }, 260);
                     });
 
-                    // Шаг 3: Появляются раскрытые страницы с заметками
                     setTimeout(() => {
                         flyingBook.style.opacity = '0';
                         openGrimoire(book);
@@ -945,6 +1124,14 @@
                     activeBook = book;
                     document.getElementById('grimTitle').textContent = book.title;
                     document.getElementById('grimAuthor').textContent = book.autor;
+
+                    const genreTag = document.getElementById('grimGenre');
+                    if (book.genre && book.genre.trim() !== '') {
+                        genreTag.textContent = book.genre;
+                        genreTag.style.display = 'inline-block';
+                    } else {
+                        genreTag.style.display = 'none';
+                    }
 
                     const statusBadge = document.getElementById('grimStatus');
                     const toggleBtn = document.getElementById('grimToggleBtn');
