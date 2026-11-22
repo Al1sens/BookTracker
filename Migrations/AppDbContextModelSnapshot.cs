@@ -40,6 +40,9 @@ namespace BookTracker.Migrations
                     b.Property<bool>("IsRead")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("Notes")
+                        .HasColumnType("text");
+
                     b.Property<DateTime?>("ReadDate")
                         .HasColumnType("timestamp with time zone");
 

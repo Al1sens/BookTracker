@@ -137,5 +137,20 @@ namespace BookTracker.Controllers
             await _context.SaveChangesAsync();
             return Ok();
         }
+
+        [HttpPatch("{id}/notes")]
+        public async Task<IActionResult> UpdateNotes(int id, [FromBody] string? notes)
+        {
+            int usedId = GetCurrentUserId();
+            var book = await _context.Books.FindAsync(id);
+
+            if (book == null || book.UserId != usedId)
+                return NotFound();
+
+            book.Notes = string.IsNullOrWhiteSpace(notes) ? null : notes;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { notes = book.Notes });
+        }
     }
 }

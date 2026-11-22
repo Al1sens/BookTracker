@@ -781,6 +781,7 @@
                 let activeBook = null;
                 let renderedTiersCount = 0;
                 let bookCursorIndex = 0;
+                let noteSaveTimer = null;
 
                 const spinePalettes = [
                     { bg: 'linear-gradient(180deg, #8b2626 0%, #4d1212 100%)', light: false }, // Рубиново-красный
@@ -909,7 +910,7 @@
                         if (shelfFilter === 'unread' && b.isRead) return false;
                         if (query) {
                             const matchTitle = b.title.toLowerCase().includes(query);
-                            const matchAuthor = b.autor.toLower().includes(query);
+                            const matchAuthor = b.autor.toLowerCase().includes(query);
                             const matchGenre = (b.genre || '').toLowerCase().includes(query);
                             if (!matchTitle && !matchAuthor && !matchGenre) return false;
                         }
@@ -1004,7 +1005,6 @@
                         wall.appendChild(tier);
                     });
 
-                    // Дорисовываем пару пустых декоративных полок снизу, чтобы шкаф выглядел цельным
                     if (genreNames.length < 4) {
                         appendEmptyTiers(wall, 4 - genreNames.length);
                     }
@@ -1147,8 +1147,8 @@
                         toggleBtn.textContent = 'Отметить прочитанной';
                     }
 
-                    const savedNote = localStorage.getItem(`book_note_${book.id}`) || '';
-                    document.getElementById('grimNotes').value = savedNote;
+                    // Берем заметки прямо из базы данных (из объекта book)
+                    document.getElementById('grimNotes').value = book.notes || '';
 
                     document.getElementById('bookModal').classList.add('open');
                 }
@@ -1156,7 +1156,20 @@
                 function saveBookNote() {
                     if (!activeBook) return;
                     const text = document.getElementById('grimNotes').value;
-                    localStorage.setItem(`book_note_${activeBook.id}`, text);
+                    activeBook.notes = text;
+
+                    // Ждём 600 мс после окончания ввода и отправляем PATCH-запрос в БД
+                    clearTimeout(noteSaveTimer);
+                    noteSaveTimer = setTimeout(async () => {
+                        await fetch(`/api/books/${activeBook.id}/notes`, {
+                            method: 'PATCH',
+                            headers: {
+                                ...authHeaders(),
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(text)
+                        });
+                    }, 600);
                 }
 
                 async function toggleCurrentBookRead() {

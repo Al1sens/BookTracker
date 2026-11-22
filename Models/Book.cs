@@ -9,7 +9,8 @@
         public bool IsRead { get; set; } = false;
         public DateTime? ReadDate { get; set; }
         public int UserId { get; set; }
-
         public string? Genre { get; set; }
+
+        public string? Notes { get; set; }
     }
 }

@@ -256,6 +256,9 @@
 
         .sidebar {
             width: 255px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
             background: linear-gradient(180deg, rgba(20, 12, 7, 0.94) 0%, rgba(10, 20, 16, 0.95) 100%);
             border-right: 1px solid var(--wood-border);
             padding: 24px 16px;
@@ -845,6 +848,8 @@
             }
 
             .sidebar {
+                position: static;
+                height: auto;
                 width: 100%;
                 border-right: none;
                 border-bottom: 1px solid var(--wood-border);
